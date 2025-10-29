@@ -1,239 +1,148 @@
-# 💰 AI-Powered Employee Salary Prediction System
+# 💼 Salary Prediction System
 
-A professional machine learning system with a web interface that predicts employee salaries using ensemble learning techniques. Built with real Kaggle data and featuring 6 state-of-the-art ML models.
+An AI-powered machine learning application that predicts employee salaries using ensemble techniques. Built with Python, scikit-learn, XGBoost, LightGBM, and Streamlit.
 
-![Python](https://img.shields.io/badge/Python-3.14+-blue)
-![Status](https://img.shields.io/badge/Status-Production-green)
-![ML](https://img.shields.io/badge/ML-Ensemble-orange)
+![Python](https://img.shields.io/badge/Python-3.14-blue)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.7.2-orange)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.50.0-red)
+
+## 🎯 Overview
+
+Machine learning system that predicts salaries based on 8 features using real Kaggle data (607 records). Includes 8 trained ensemble models and an interactive web interface.
+
+**Best Model**: Stacking Ensemble (R² = 0.5154, RMSE = $43,096)
 
 ## ✨ Features
 
-- 🎯 **Real-time Salary Predictions** - Interactive web interface
-- 🤖 **6 ML Models** - Random Forest, XGBoost, LightGBM, Stacking, etc.
-- 📊 **Data Insights** - Interactive visualizations and analytics
-- 📈 **Model Comparison** - Compare predictions across all models
-- 💼 **Real Data** - Trained on 607 real salary records from Kaggle
-- 🎨 **Professional UI** - Modern, responsive Streamlit interface
+- 🤖 **8 ML Models**: Random Forest, Gradient Boosting, XGBoost, LightGBM, AdaBoost, Bagging, Voting, Stacking
+- 🎨 **Interactive UI**: Real-time predictions with Streamlit
+- 📊 **Visualizations**: Performance metrics and data insights with Plotly
+- 💾 **Pre-trained Models**: Ready-to-use saved models
+- 📈 **Comprehensive Metrics**: R², RMSE, MAE, MAPE
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Installation
+
 ```bash
+# Clone repository
+git clone https://github.com/ankitsingh794/Salary-prediction.git
+cd Salary-prediction
+
+# Create virtual environment
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Mac/Linux
+
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### 2. Train Models (First Time Only)
-```bash
-python main.py
-```
-
-### 3. Launch Web Application
-```bash
+# Run application
 streamlit run app.py
 ```
 
-Or double-click `run_app.bat` (Windows)
+Open browser at `http://localhost:8501`
 
-The web app will open at `http://localhost:8501`
+### Windows Quick Launch
+```bash
+run_app.bat
+```
 
-## 🤖 Machine Learning Models
+## 💻 Usage
 
-### Ensemble Models Implemented
-1. **🌲 Random Forest** - Bagging with decision trees
-2. **📈 Gradient Boosting** - Sequential boosting
-3. **⚡ XGBoost** - Extreme gradient boosting
-4. **💡 LightGBM** - Light gradient boosting
-5. **🗳️ Voting Ensemble** - Average predictions
-6. **🏗️ Stacking Ensemble** - Meta-learning (Best: R² = 0.51)
+### Web Interface
+1. Navigate to **"Predict Salary"** page
+2. Enter employee details:
+   - Job title, experience, education, location, company size, department, age, hours/week
+3. Click **"PREDICT SALARY"**
+4. View predictions from multiple models with salary breakdown
+
+### Python API
+```python
+import joblib
+import pandas as pd
+
+# Load model
+model = joblib.load('models/stacking_ensemble.joblib')
+
+# Prepare data (correct feature order required)
+data = pd.DataFrame({
+    'job_title': [25], 'location': [45], 'company_size': [1],
+    'experience_years': [5], 'education': [1], 'department': [0],
+    'age': [30], 'hours_per_week': [40]
+})
+
+# Predict
+salary = model.predict(data)[0]
+print(f"Predicted: ${salary:,.0f}")
+```
+
+## 📊 Model Performance
+
+| Model | R² Score | RMSE ($) | MAE ($) |
+|-------|----------|----------|---------|
+| **Stacking Ensemble** 🥇 | 0.5154 | 43,096 | 29,126 |
+| Bagging Regressor | 0.4768 | 44,780 | 30,386 |
+| Random Forest | 0.4736 | 44,916 | 31,364 |
+| LightGBM | 0.4204 | 47,130 | 31,910 |
+| XGBoost | 0.2902 | 52,159 | 38,081 |
+| Gradient Boosting | 0.2609 | 53,221 | 37,958 |
 
 ## 📁 Project Structure
 
 ```
-Project PBEL/
-│
-├── config.py                  # Configuration and hyperparameters
-├── data_loader.py             # Data loading and preprocessing
-├── models.py                  # Machine learning models
-├── visualization.py           # Visualization utilities
-├── main.py                    # Main pipeline script
-├── requirements.txt           # Python dependencies
-├── README.md                  # Project documentation
-│
-├── data/                      # Data directory
-│   ├── salary_data.csv        # Raw data
-│   └── processed_data.csv     # Processed data
-│
-├── models/                    # Saved models
-│   ├── random_forest.joblib
-│   ├── gradient_boosting.joblib
-│   ├── xgboost.joblib
-│   └── ...
-│
-└── results/                   # Results and visualizations
-    ├── validation_results.csv
-    ├── test_results.csv
-    ├── model_comparison.png
-    ├── predictions_vs_actual.png
-    ├── residuals.png
-    ├── feature_importance.png
-    └── data_distribution.png
+├── app.py                  # Streamlit web app
+├── main.py                 # Model training pipeline
+├── models.py               # ML implementations
+├── data_loader.py          # Data preprocessing
+├── visualization.py        # Plotting functions
+├── config.py              # Configuration
+├── requirements.txt       # Dependencies
+├── models/                # Trained models (8 .joblib files)
+├── results/               # Metrics and visualizations
+└── ds_salaries.csv       # Dataset (607 records)
 ```
 
-## 🚀 Getting Started
+## 🛠️ Tech Stack
 
-### Prerequisites
+- **ML**: scikit-learn, XGBoost, LightGBM
+- **Web**: Streamlit, Plotly
+- **Data**: pandas, numpy
+- **Viz**: matplotlib, seaborn
 
-- Python 3.8 or higher
-- pip package manager
+## 🔧 Retrain Models
 
-### Installation
-
-1. Install required packages:
-```bash
-pip install -r requirements.txt
-```
-
-### Usage
-
-Run the complete pipeline:
 ```bash
 python main.py
 ```
 
-This will:
-1. Load/create sample data
-2. Preprocess and split data
-3. Train all models (8 different models)
-4. Evaluate models on validation and test sets
-5. Generate visualizations
-6. Save models and results
+This will train all models, evaluate performance, and save to `models/` directory.
 
-## 📈 Model Evaluation Metrics
+## 🚀 Deployment
 
-The models are evaluated using:
-- **RMSE** (Root Mean Squared Error) - Lower is better
-- **MAE** (Mean Absolute Error) - Lower is better
-- **R² Score** (Coefficient of Determination) - Higher is better (max 1.0)
-- **MAPE** (Mean Absolute Percentage Error) - Lower is better
+**Streamlit Cloud** (Recommended):
+1. Push to GitHub
+2. Visit [share.streamlit.io](https://share.streamlit.io)
+3. Connect repository and deploy
 
-## 🎨 Visualizations
+## 📈 Dataset
 
-The project generates several visualizations:
-1. **Data Distribution** - Salary distribution and feature analysis
-2. **Model Comparison** - Performance comparison across all models
-3. **Predictions vs Actual** - Scatter plot showing prediction accuracy
-4. **Residuals Analysis** - Understanding prediction errors
-5. **Feature Importance** - Most important features for prediction
-
-## 🔧 Configuration
-
-Edit `config.py` to modify:
-- Model hyperparameters
-- Data paths
-- Train/test split ratios
-- Feature lists
-- Random seed for reproducibility
-
-## 📊 Expected Results
-
-The ensemble models typically achieve:
-- **R² Score**: 0.85 - 0.95
-- **RMSE**: $5,000 - $10,000
-- **MAPE**: 5% - 10%
-
-Best performing models are usually:
-1. Stacking Ensemble
-2. Voting Ensemble
-3. XGBoost
-4. LightGBM
-
-## 🌟 Key Features
-
-### Data Processing
-- Automatic handling of missing values
-- Label encoding for categorical features
-- Standard scaling for numerical features
-- Train/validation/test split
-
-### Model Training
-- Multiple ensemble techniques
-- Cross-validation support
-- Hyperparameter optimization ready
-- Model persistence (save/load)
-
-### Evaluation
-- Comprehensive metrics
-- Feature importance analysis
-- Model comparison
-- Residual analysis
-
-## 📝 Notes
-
-### Using Kaggle Data
-
-To use real data from Kaggle:
-
-1. Install Kaggle API:
-```bash
-pip install kaggle
-```
-
-2. Set up Kaggle credentials:
-   - Go to your Kaggle account settings
-   - Create new API token
-   - Place `kaggle.json` in `~/.kaggle/`
-
-3. Download dataset:
-```bash
-kaggle datasets download -d <dataset-name>
-```
-
-4. Update `data_loader.py` to load your dataset
-
-### Sample Datasets on Kaggle
-- [Data Science Salaries 2023](https://www.kaggle.com/datasets/ruchi798/data-science-job-salaries)
-- [Salary Prediction Dataset](https://www.kaggle.com/datasets/mohithsairamreddy/salary-data)
-- [Tech Salaries](https://www.kaggle.com/datasets/thedevastator/jobs-dataset-from-glassdoor)
-
-## 🔄 Future Enhancements
-
-- [ ] Hyperparameter tuning with GridSearchCV/RandomizedSearchCV
-- [ ] Deep learning models (Neural Networks)
-- [ ] Feature engineering and selection
-- [ ] Cross-validation for ensemble models
-- [ ] Real-time prediction API
-- [ ] Interactive web dashboard
-- [ ] Outlier detection and handling
-- [ ] More sophisticated feature interactions
-
-## 📚 Dependencies
-
-- pandas: Data manipulation
-- numpy: Numerical computations
-- scikit-learn: ML models and preprocessing
-- xgboost: Gradient boosting
-- lightgbm: Light gradient boosting
-- matplotlib: Visualization
-- seaborn: Statistical visualization
-- joblib: Model persistence
-
-## 🤝 Contributing
-
-Feel free to fork this project and submit pull requests with improvements!
-
-## 📄 License
-
-This project is open source and available under the MIT License.
+- **Source**: Real Kaggle salary data
+- **Records**: 607 employees
+- **Features**: Job title, experience, education, location, company size, department, age, hours/week
+- **Target**: Annual salary (USD)
+- **Range**: $2,859 - $600,000
+- **Mean**: $112,298
 
 ## 👨‍💻 Author
 
-Created for demonstrating ensemble machine learning techniques for salary prediction.
+**Ankit Singh**
+- GitHub: [@ankitsingh794](https://github.com/ankitsingh794)
 
-## 📧 Contact
+## 📝 License
 
-For questions or suggestions, please open an issue in the repository.
+Open-source, available for educational purposes.
 
 ---
 
-**Happy Predicting! 🎯**
-# Salary-prediction
+⭐ **Star this repo if you find it helpful!**
