@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+.venv-tts/
+env/
+venv/
+ENV/
+
+# IPython
+.profile_default/
+.ipynb_checkpoints
+
+# PyTest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dylib
+*.dll
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# VSCode and JetBrains
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Local env files
+.env
+.env.*
+
+# Databases, caches and runtime files
+*.db
+*.sqlite3
+companion_memory.db
+
+# Large model files/cache
+# Keep trained models for this ML project
+# models/*
+# !models/.gitkeep
+
+# TTS / Audio outputs
+*.wav
+*.mp3
+audio_output/
+
+# Selenium / Browser downloads
+selenium-downloads/
+
+# Archive files
+*.zip
+*.tar.gz
+*.tgz
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Logs and temp for Perplexity/Comet
+perplexity_browser_profiles/
+comet_profile/
+
+# Ignore environment-specific state
+.local/
+
+# Keep README and source files tracked
+!README.md
+!*.py
