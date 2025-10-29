@@ -521,7 +521,7 @@ def show_about_page():
         
         **Version:** 1.0  
         **Created:** 2025  
-        **Status:** Production Ready
+        **Status:** Ready
         
         ### 🛠️ How to Use
         
