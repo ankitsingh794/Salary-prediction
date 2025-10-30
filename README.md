@@ -130,9 +130,9 @@ This will train all models, evaluate performance, and save to `models/` director
 - **Source**: Real Kaggle salary data
 - **Records**: 607 employees
 - **Features**: Job title, experience, education, location, company size, department, age, hours/week
-- **Target**: Annual salary (USD)
-- **Range**: $2,859 - $600,000
-- **Mean**: $112,298
+- **Target**: Annual salary (INR)
+- **Range**: ₹2,37,297 - ₹49,80,00,000
+- **Mean**: ₹93,20,734
 
 ## 👨‍💻 Author
 

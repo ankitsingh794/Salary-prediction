@@ -12,6 +12,9 @@ import plotly.graph_objects as go
 from pathlib import Path
 import config
 
+# Currency conversion rate (USD to INR)
+USD_TO_INR = 83.0  # Update this rate as needed
+
 # Page configuration
 st.set_page_config(
     page_title="AI Salary Predictor",
@@ -235,7 +238,8 @@ def show_prediction_page(models, encoders):
             
             # Make prediction
             model = models[model_choice]
-            prediction = model.predict(input_data)[0]
+            prediction_usd = model.predict(input_data)[0]
+            prediction = prediction_usd * USD_TO_INR  # Convert to INR
             
             # Display results
             st.success("✅ Prediction Complete!")
@@ -246,7 +250,7 @@ def show_prediction_page(models, encoders):
                 st.markdown(f"""
                     <div class="metric-card">
                         <h2>Predicted Annual Salary</h2>
-                        <h1 style="font-size: 3rem; margin: 1rem 0;">${prediction:,.0f}</h1>
+                        <h1 style="font-size: 3rem; margin: 1rem 0;">₹{prediction:,.0f}</h1>
                         <p style="opacity: 0.9;">Model: {model_choice}</p>
                     </div>
                 """, unsafe_allow_html=True)
@@ -257,29 +261,29 @@ def show_prediction_page(models, encoders):
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("📊 Monthly", f"${prediction/12:,.0f}", help="Monthly salary")
+                st.metric("📊 Monthly", f"₹{prediction/12:,.0f}", help="Monthly salary")
             
             with col2:
-                st.metric("💵 Weekly", f"${prediction/52:,.0f}", help="Weekly salary")
+                st.metric("💵 Weekly", f"₹{prediction/52:,.0f}", help="Weekly salary")
             
             with col3:
                 hourly = prediction / (52 * hours)
-                st.metric("⏱️ Hourly", f"${hourly:,.0f}", help="Hourly rate")
+                st.metric("⏱️ Hourly", f"₹{hourly:,.0f}", help="Hourly rate")
             
             with col4:
                 confidence = "High" if experience > 5 else "Medium"
                 st.metric("🎯 Confidence", confidence, help="Prediction confidence")
             
             # Salary range
-            st.info(f"💡 **Typical Range:** ${prediction*0.85:,.0f} - ${prediction*1.15:,.0f} (±15%)")
+            st.info(f"💡 **Typical Range:** ₹{prediction*0.85:,.0f} - ₹{prediction*1.15:,.0f} (±15%)")
             
             # Comparison with all models
             st.subheader("🔄 Predictions from All Models")
             all_predictions = {}
             for name, mdl in models.items():
                 try:
-                    pred = mdl.predict(input_data)[0]
-                    all_predictions[name] = pred
+                    pred_usd = mdl.predict(input_data)[0]
+                    all_predictions[name] = pred_usd * USD_TO_INR  # Convert to INR
                 except:
                     pass
             
@@ -292,7 +296,7 @@ def show_prediction_page(models, encoders):
                 
                 fig = px.bar(pred_df, x='Prediction', y='Model', orientation='h',
                            title='Salary Predictions by Different Models',
-                           labels={'Prediction': 'Predicted Salary ($)'},
+                           labels={'Prediction': 'Predicted Salary (₹)'},
                            color='Prediction',
                            color_continuous_scale='Viridis')
                 fig.update_layout(height=400, showlegend=False)
@@ -325,8 +329,8 @@ def show_performance_page():
                 st.markdown("#### 📉 Key Metrics (Test Set)")
                 best_model = test_results.loc[test_results['r2'].idxmax()]
                 st.metric("Best R² Score", f"{best_model['r2']:.4f}")
-                st.metric("Best RMSE", f"${best_model['rmse']:,.0f}")
-                st.metric("Best MAE", f"${best_model['mae']:,.0f}")
+                st.metric("Best RMSE", f"₹{best_model['rmse']*USD_TO_INR:,.0f}")
+                st.metric("Best MAE", f"₹{best_model['mae']*USD_TO_INR:,.0f}")
             
             # R² comparison chart
             fig = px.bar(test_results.reset_index(), x='index', y='r2',
@@ -339,19 +343,31 @@ def show_performance_page():
         
         with tab2:
             st.subheader("Validation Set Performance")
-            st.dataframe(val_results.style.highlight_max(axis=0, subset=['val_r2'], color='lightgreen')
+            # Convert USD columns to INR for display
+            val_display = val_results.copy()
+            val_display['val_rmse'] = val_display['val_rmse'] * USD_TO_INR
+            val_display['val_mae'] = val_display['val_mae'] * USD_TO_INR
+            val_display['train_rmse'] = val_display['train_rmse'] * USD_TO_INR
+            val_display['train_mae'] = val_display['train_mae'] * USD_TO_INR
+            
+            st.dataframe(val_display.style.highlight_max(axis=0, subset=['val_r2'], color='lightgreen')
                         .highlight_min(axis=0, subset=['val_rmse', 'val_mae'], color='lightgreen')
-                        .format({'val_rmse': '${:,.2f}', 'val_mae': '${:,.2f}', 
+                        .format({'val_rmse': '₹{:,.2f}', 'val_mae': '₹{:,.2f}', 
                                'val_r2': '{:.4f}', 'val_mape': '{:.2f}%',
-                               'train_rmse': '${:,.2f}', 'train_mae': '${:,.2f}',
+                               'train_rmse': '₹{:,.2f}', 'train_mae': '₹{:,.2f}',
                                'train_r2': '{:.4f}', 'train_mape': '{:.2f}%'}),
                         use_container_width=True)
         
         with tab3:
             st.subheader("Test Set Performance")
-            st.dataframe(test_results.style.highlight_max(axis=0, subset=['r2'], color='lightgreen')
+            # Convert USD columns to INR for display
+            test_display = test_results.copy()
+            test_display['rmse'] = test_display['rmse'] * USD_TO_INR
+            test_display['mae'] = test_display['mae'] * USD_TO_INR
+            
+            st.dataframe(test_display.style.highlight_max(axis=0, subset=['r2'], color='lightgreen')
                         .highlight_min(axis=0, subset=['rmse', 'mae'], color='lightgreen')
-                        .format({'rmse': '${:,.2f}', 'mae': '${:,.2f}', 
+                        .format({'rmse': '₹{:,.2f}', 'mae': '₹{:,.2f}', 
                                'r2': '{:.4f}', 'mape': '{:.2f}%'}),
                         use_container_width=True)
         
@@ -395,16 +411,19 @@ def show_insights_page(salary_data):
         with col1:
             st.metric("📦 Total Records", f"{len(salary_data):,}")
         with col2:
-            st.metric("💵 Mean Salary", f"${salary_data[salary_col].mean():,.0f}")
+            st.metric("💵 Mean Salary", f"₹{salary_data[salary_col].mean()*USD_TO_INR:,.0f}")
         with col3:
-            st.metric("📊 Median Salary", f"${salary_data[salary_col].median():,.0f}")
+            st.metric("📊 Median Salary", f"₹{salary_data[salary_col].median()*USD_TO_INR:,.0f}")
         with col4:
-            st.metric("📏 Salary Range", f"${salary_data[salary_col].min():,.0f} - ${salary_data[salary_col].max():,.0f}")
+            st.metric("📏 Salary Range", f"₹{salary_data[salary_col].min()*USD_TO_INR:,.0f} - ₹{salary_data[salary_col].max()*USD_TO_INR:,.0f}")
         
         # Salary distribution
-        fig = px.histogram(salary_data, x=salary_col, nbins=50,
+        salary_data_inr = salary_data.copy()
+        salary_data_inr[salary_col] = salary_data_inr[salary_col] * USD_TO_INR
+        
+        fig = px.histogram(salary_data_inr, x=salary_col, nbins=50,
                           title='Salary Distribution',
-                          labels={salary_col: 'Salary ($)'},
+                          labels={salary_col: 'Salary (₹)'},
                           color_discrete_sequence=['#1f77b4'])
         fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
@@ -422,11 +441,11 @@ def show_insights_page(salary_data):
         
         if 'job_title' in salary_data.columns:
             # Top paying jobs
-            top_jobs = salary_data.groupby('job_title')[salary_col].mean().sort_values(ascending=False).head(15)
+            top_jobs = salary_data.groupby('job_title')[salary_col].mean().sort_values(ascending=False).head(15) * USD_TO_INR
             
             fig = px.bar(x=top_jobs.values, y=top_jobs.index, orientation='h',
                         title='Top 15 Highest Paying Job Titles',
-                        labels={'x': 'Average Salary ($)', 'y': 'Job Title'},
+                        labels={'x': 'Average Salary (₹)', 'y': 'Job Title'},
                         color=top_jobs.values,
                         color_continuous_scale='Viridis')
             fig.update_layout(showlegend=False, height=500)
@@ -450,10 +469,11 @@ def show_insights_page(salary_data):
         if location_col in salary_data.columns:
             # Top locations
             top_locations = salary_data.groupby(location_col)[salary_col].agg(['mean', 'count']).sort_values('mean', ascending=False).head(15)
+            top_locations['mean'] = top_locations['mean'] * USD_TO_INR
             
             fig = px.bar(x=top_locations['mean'], y=top_locations.index, orientation='h',
                         title='Top 15 Highest Paying Locations',
-                        labels={'x': 'Average Salary ($)', 'y': 'Location'},
+                        labels={'x': 'Average Salary (₹)', 'y': 'Location'},
                         color=top_locations['mean'],
                         color_continuous_scale='Viridis')
             fig.update_layout(showlegend=False, height=500)
